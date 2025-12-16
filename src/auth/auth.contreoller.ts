@@ -4,8 +4,8 @@ import { AuthService } from './auth.service';
 export class AuthController {
   static async signup(req: Request, res: Response) {
     const { name, surname, username, password } = req.body;
-    await AuthService.signup({ name, surname, username, password });
-    res.status(201).json({ ok: true, message: 'User created' });
+    const tokens = await AuthService.signup({ name, surname, username, password });
+    res.status(201).json({ ok: true, ...tokens });
   }
 
   static async login(req: Request, res: Response) {
@@ -16,5 +16,9 @@ export class AuthController {
       return res.status(404).json({ ok: false, message: 'Invalid credentials' });
 
     res.json({ ok: true, token });
+  }
+  
+  static async getUser(req: Request, res: Response) {
+   
   }
 }

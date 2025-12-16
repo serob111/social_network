@@ -1,12 +1,11 @@
 import { Request, Response, NextFunction } from 'express'
-import { TAuth } from '../../types/auth'
-import { verifyToken } from '../../utils/jwt'
+import { JwtPayload, verifyToken } from '../../utils/jwt'
 
 export interface AuthRequest extends Request {
-  user?: TAuth
+  user?: JwtPayload
 }
 
-export const auth = (
+export const isAuth = (
   req: AuthRequest,
   res: Response,
   next: NextFunction
