@@ -1,8 +1,8 @@
 import { Router } from 'express'
-import { AuthController } from './auth.contreoller'
 import { validate } from '../middlewares/auth/validator'
 import { User } from './auth.model'
 import { isAuth } from '../middlewares/auth/isAuth'
+import authContreoller from './auth.contreoller'
 
 const router = Router()
 
@@ -24,7 +24,7 @@ router.post(
       minLength: 6,
     },
   ]),
-  AuthController.signup
+  authContreoller.signup
 )
 
 router.post(
@@ -33,13 +33,13 @@ router.post(
     { field: 'username', required: true },
     { field: 'password', required: true },
   ]),
-  AuthController.login
+  authContreoller.login
 )
 
 router.get(
   '/user',
   isAuth,
-  AuthController.getUser
+  authContreoller.getUser
 )
 
 export const AuthRouter = router
