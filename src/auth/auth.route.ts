@@ -1,8 +1,8 @@
 import { Router } from 'express'
-import { validate } from '../middlewares/auth/validator'
+import authController from './auth.contreoller'
 import { User } from './auth.model'
+import { validate } from './auth.validator'
 import { isAuth } from '../middlewares/auth/isAuth'
-import authContreoller from './auth.contreoller'
 
 const router = Router()
 
@@ -12,34 +12,36 @@ router.post(
     {
       field: 'username',
       required: true,
-      minLength: 3,
       unique: async (value) => {
-        const user = await User.findOne({ where: { username: value } })
+        const user = await User.findOne({
+          where: { username: value },
+        })
         return !user
       },
     },
-    {
-      field: 'password',
-      required: true,
-      minLength: 6,
-    },
+    { field: 'name', required: true },
+    { field: 'surname', required: true },
+    { field: 'password', required: true, minLength: 6 },
   ]),
-  authContreoller.signup
+  authController.signup
 )
 
 router.post(
   '/login',
   validate([
-    { field: 'username', required: true },
-    { field: 'password', required: true },
+    {
+      field: 'username',
+      required: true,
+    },
+    { field: 'password', required: true},
   ]),
-  authContreoller.login
+  authController.login
 )
 
 router.get(
   '/user',
   isAuth,
-  authContreoller.getUser
+  authController.getUser
 )
 
 export const AuthRouter = router

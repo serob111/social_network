@@ -4,6 +4,7 @@ import { ENV } from '../config/env';
 export interface JwtPayload {
   id: number
 }
+
 export const generateTokens = (userId: number) => {
   const accessToken = jwt.sign(
     { id: userId },

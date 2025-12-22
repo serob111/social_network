@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { JwtPayload, verifyToken } from '../../utils/jwt'
+import { getBearerToken } from '../../utils/get.bearer'
+import { unauthorized } from '../../utils/http.responses'
 
 export interface AuthRequest extends Request {
   user?: JwtPayload
@@ -13,29 +15,17 @@ export const isAuth = (
   const header = req.headers.authorization
 
   if (!header) {
-    return res.status(401).json({
-      ok: false,
-      message: 'Authorization header missing',
-    })
+    return unauthorized(res, 'Authorization header missing')
   }
 
-  const [type, token] = header.split(' ')
+  const token = getBearerToken(req)
 
-  if (type !== 'Bearer' || !token) {
-    return res.status(401).json({
-      ok: false,
-      message: 'Invalid authorization format',
-    })
-  }
-
-  try {
-    const payload = verifyToken(token)
-    req.user = payload
-    next()
-  } catch {
-    return res.status(401).json({
-      ok: false,
-      message: 'Invalid or expired token',
-    })
-  }
+  if (token)
+    try {
+      const payload = verifyToken(token)
+      req.user = payload
+      next()
+    } catch {
+      return unauthorized(res, 'Invalid or expired token')
+    }
 }
