@@ -34,5 +34,52 @@ class AuthService {
       return null
     }
   }
+
+  async updateUsername(
+    userId: number,
+    newUsername: string,
+    password: string
+  ) {
+    if (!newUsername || !password) {
+      return { ok: false, message: 'Missing fields' };
+    }
+
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return { ok: false, message: 'User not found' };
+    }
+
+    const isValid = await compareHash(password, user.password);
+    if (!isValid) {
+      return { ok: false, message: 'Password is not correct' };
+    }
+
+    const existingUser = await User.findOne({
+      where: { username: newUsername },
+    });
+
+    if (existingUser) {
+      return { ok: false, message: 'Username is already taken' };
+    }
+
+    user.username = newUsername;
+    await user.save();
+
+    return { ok: true };
+  }
+
+  async updatePrivacy(
+    userId: number,
+    privacy: boolean,
+  ) {
+    const user = await User.findByPk(userId);
+    if (!user) {
+      return { ok: false, message: 'User not found' };
+    }
+    user.isPrivate = privacy;
+    await user.save();
+
+    return { ok: true };
+  }
 }
 export default new AuthService()

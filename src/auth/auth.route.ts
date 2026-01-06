@@ -33,7 +33,7 @@ router.post(
       field: 'username',
       required: true,
     },
-    { field: 'password', required: true},
+    { field: 'password', required: true },
   ]),
   authController.login
 )
@@ -43,5 +43,18 @@ router.get(
   isAuth,
   authController.getUser
 )
+
+router.patch(
+  '/user/username',
+  isAuth,
+  authController.updateUsername
+);
+
+router.patch(
+  '/user/privacy',
+  isAuth,
+  authController.updatePrivacy
+);
+
 
 export const AuthRouter = router

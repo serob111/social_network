@@ -1,8 +1,6 @@
 import { Request, Response } from 'express';
 import authService from './auth.service';
 import { created, serverError, notFound, success } from '../utils/http.responses';
-import { getBearerToken } from '../utils/get.bearer';
-import { compareHash } from '../utils/pipe';
 import { ReqWithUser } from '../types/auth';
 
 
@@ -46,6 +44,48 @@ class AuthController {
     }
     return success(res, user)
   }
+
+  async updateUsername(req: Request, res: Response) {
+    try {
+      const userId = (req as ReqWithUser).user?.id;
+      const { username, password } = req.body;
+
+      const result = await authService.updateUsername(
+        userId as number,
+        username,
+        password
+      );
+
+      if (!result.ok) {
+        return notFound(res, result.message);
+      }
+
+      return success(res, null, 'Username updated');
+    } catch (err) {
+      return serverError(res, err);
+    }
+  }
+
+  async updatePrivacy(req: Request, res: Response) {
+    try {
+      const userId = (req as ReqWithUser).user?.id;
+      const { privacy } = req.body;
+
+      const result = await authService.updatePrivacy(
+        userId as number,
+        privacy
+      );
+
+      if (!result.ok) {
+        return notFound(res, result.message);
+      }
+
+      return success(res, null, 'privacy updated');
+    } catch (err) {
+      return serverError(res, err);
+    }
+  }
+
 }
 
 export default new AuthController();
