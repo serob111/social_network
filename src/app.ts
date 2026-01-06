@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import { AuthRouter } from './auth/auth.route';
+import FollowRouter from './follows/follow.route';
 
 dotenv.config();
 
@@ -9,6 +10,8 @@ app.use(express.json());
 app.use(express.urlencoded())
 
 app.use('/auth', AuthRouter);
+app.use('/auth', FollowRouter);
+
 
 
 export default app;
