@@ -1,20 +1,8 @@
 import app from './app';
-import { User } from './auth/auth.model';
 import { sequelize } from './config/db';
 import { ENV } from './config/env';
-import { UserFollow } from './follows/follow.model';
-
+import '../src/config/index'
 const PORT = ENV.PORT;
-
-UserFollow.belongsTo(User, {
-  foreignKey: 'followerId',
-  as: 'Follower',
-});
-
-UserFollow.belongsTo(User, {
-  foreignKey: 'followingId',
-  as: 'Following',
-});
 
 
 (async () => {
