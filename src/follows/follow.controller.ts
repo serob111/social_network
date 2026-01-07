@@ -53,6 +53,18 @@ class FollowController {
             return serverError(res, err);
         }
     }
+
+    async followRequests(req: Request, res: Response) {
+        try {
+          const meId = (req as ReqWithUser).user!.id;
+    
+          const users = await followService.getFollowRequests(meId);
+    
+          return success(res, { users });
+        } catch (err) {
+          return serverError(res, err);
+        }
+      }
 }
 
 export default new FollowController();

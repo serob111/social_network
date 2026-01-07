@@ -69,6 +69,37 @@ class FollowService {
 
         return { ok: true };
     }
+
+    async getFollowRequests(userId: number) {
+        const me = await User.findByPk(userId, {
+            attributes: ['isPrivate'],
+        });
+
+        if (!me || !me.isPrivate) {
+            return [];
+        }
+
+        const requests = await UserFollow.findAll({
+            where: {
+                followingId: userId,
+                status: 'pending',
+            },
+            include: [
+                {
+                    model: User,
+                    as: 'Follower',
+                    attributes: [
+                        'id',
+                        'name',
+                        'surname',
+                        'username',
+                    ],
+                },
+            ],
+        });
+
+        return requests.map(r => r.Follower);
+    }
 }
 
 export default new FollowService();
